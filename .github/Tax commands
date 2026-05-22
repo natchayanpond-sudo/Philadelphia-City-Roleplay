@@ -1,0 +1,44 @@
+const { SlashCommandBuilder } = require('discord.js');
+
+const FOOTER_URL = process.env.TAX_FOOTER_URL || 'YOUR_FOOTER_URL_HERE';
+
+module.exports = {
+  data: new SlashCommandBuilder()
+    .setName('tax')
+    .setDescription('Calculate Roblox 30% marketplace tax.')
+    .addIntegerOption(option =>
+      option
+        .setName('amount')
+        .setDescription('The amount you want to receive after tax')
+        .setRequired(true)
+        .setMinValue(1)
+    ),
+
+  async execute(interaction) {
+    const targetAmount = interaction.options.getInteger('amount', true);
+    const chargeAmount = Math.ceil(targetAmount / 0.7);
+    const amountWithoutTax = Math.floor(chargeAmount * 0.7);
+    const directFinalAmount = Math.floor(targetAmount * 0.7);
+    const container = {
+      type: 17,
+      components: [
+        {
+          type: 10,
+          content:
+            `## Tax Calculator\n\n` +
+            `**If you charge R$${targetAmount.toLocaleString()}, you would receive:**\n` +
+            `R$${directFinalAmount.toLocaleString()}\n\n` +
+            `**If you want R$${targetAmount.toLocaleString()}, you need to charge:**\n` +
+            `R$${chargeAmount.toLocaleString()}`
+        },
+        { type: 14, spacing: 2, divider: true },
+        { type: 12, items: [{ media: { url: FOOTER_URL } }] }
+      ]
+    };
+
+    await interaction.reply({
+      flags: 32768,
+      components: [container]
+    });
+  },
+};
