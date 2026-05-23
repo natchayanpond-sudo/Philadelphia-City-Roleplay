@@ -1,0 +1,28 @@
+const { EmbedBuilder } = require('discord.js');
+
+module.exports = {
+ name: 'tax',
+ aliases: [],
+ description: 'Roblox tax',
+ async execute(message, args, client) {
+ if (!args[0] || isNaN(args[0])) return message.reply('Please provide a valid number.');
+
+ const afterTax = parseInt(args[0]);
+ const beforeTax = Math.ceil(afterTax / 0.7);
+ const tax = beforeTax - afterTax;
+
+ const embed = new EmbedBuilder()
+ .setTitle('Tax')
+ .setColor('#da7799')
+ .addFields(
+ { name: 'Before Tax', value: `\`${afterTax.toLocaleString()}\``, inline: true },
+ { name: 'Taxed', value: `\`${tax.toLocaleString()}\``, inline: true },
+ { name: 'After Tax', value: `\`${beforeTax.toLocaleString()}\``, inline: true }
+ )
+ .setImage(
+ 'https://media.discordapp.net/attachments/1429507631055372311/1473799651147645074/dubai_footer.png?ex=69978662&is=699634e2&hm=e1101d14b140baa9483d5297169f8f45f57e42789c16e34a2dfa9a8d7cc86e1f&=&format=webp&quality=lossless&width=1047&height=62'
+ );
+
+ await message.reply({ embeds: [embed] });
+ }
+};
